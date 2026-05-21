@@ -58,11 +58,29 @@ jobs:
 
       - name: Translate Markdown
         run: |
-          translate -l "$TRANSLATION_LANGUAGES" -md -y -s --repo-url "https://github.com/github/copilot-cli-for-beginners.git"
+          for attempt in 1 2 3; do
+            if translate -l "$TRANSLATION_LANGUAGES" -md -y -s --repo-url "https://github.com/github/copilot-cli-for-beginners.git"; then
+              exit 0
+            fi
+            echo "Markdown translation attempt $attempt failed."
+            if [ "$attempt" -lt 3 ]; then
+              sleep 30
+            fi
+          done
+          exit 1
 
       - name: Translate images
         run: |
-          translate -l "$TRANSLATION_LANGUAGES" -img -y -s --repo-url "https://github.com/github/copilot-cli-for-beginners.git"
+          for attempt in 1 2 3; do
+            if translate -l "$TRANSLATION_LANGUAGES" -img -y -s --repo-url "https://github.com/github/copilot-cli-for-beginners.git"; then
+              exit 0
+            fi
+            echo "Image translation attempt $attempt failed."
+            if [ "$attempt" -lt 3 ]; then
+              sleep 30
+            fi
+          done
+          exit 1
 
       - name: Normalize and review translations
         run: |
